@@ -75,7 +75,7 @@ class JSONBERT_INTERPOLATE(BertForMaskedLM):
             )
 
 
-    def forward(self, input_ids, attention_mask=None, token_type_ids=None, labels=None, key_positions=None):
+    def forward(self, input_ids, attention_mask=None, token_type_ids=None, labels=None, key_positions=None, **kwargs):
         # Move inputs to device
         device = input_ids.device
         attention_mask = attention_mask.to(device)

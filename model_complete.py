@@ -7,7 +7,7 @@ from safetensors.torch import load_file
 
 
 class JSONBERT_COMPLETE(BertForMaskedLM):
-    def __init__(self, config, tokenizer, model_path=None, lambda_align=0.5):
+    def __init__(self, config, tokenizer, model_path=None, lambda_align=0.45):
         """
         Args:
             config (BertConfig): Configuration for the BERT model.
@@ -120,7 +120,7 @@ class JSONBERT_COMPLETE(BertForMaskedLM):
 
         return centroid_alignment_loss
 
-    def forward(self, input_ids, attention_mask=None, token_type_ids=None, labels=None, key_positions=None, compute_alignment_loss=False):
+    def forward(self, input_ids, attention_mask=None, token_type_ids=None, labels=None, key_positions=None, compute_alignment_loss=False, **kwargs):
         device = input_ids.device
         attention_mask = attention_mask.to(device)
         if token_type_ids is not None:

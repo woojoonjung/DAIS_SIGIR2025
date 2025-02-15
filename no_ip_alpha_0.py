@@ -104,7 +104,7 @@ class JSONBERT_NEWLOSS_0(BertForMaskedLM):
 
         return centroid_alignment_loss
 
-    def forward(self, input_ids, attention_mask=None, token_type_ids=None, labels=None, key_positions=None, compute_alignment_loss=False):
+    def forward(self, input_ids, attention_mask=None, token_type_ids=None, labels=None, key_positions=None, compute_alignment_loss=False, **kwargs):
         device = input_ids.device
         attention_mask = attention_mask.to(device)
         if token_type_ids is not None:

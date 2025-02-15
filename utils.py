@@ -43,9 +43,9 @@ def _serialize_vanilla(json_obj, parent_key="", sep="."):
     return " ".join(serialized)
 
 def _serialize(tokenizer, json_obj):
-        tokenized = tokenizer.tokenize(str(json_obj))
-        tokenized = [token for token in tokenized if token != "'"]
-        return " ".join(tokenized)
+    tokenized = tokenizer.tokenize(str(json_obj))
+    tokenized = [token for token in tokenized if token != "'"]
+    return " ".join(tokenized)
 
 ############################## TOKENIZE ###################################
 
@@ -155,9 +155,11 @@ def get_table_embedding(entry, model, tokenizer):
     entry.pop('class', None)
     inputs, _ = tokenize_table(entry, tokenizer)
     with torch.no_grad():
-        outputs = model(**inputs, output_hidden_states=True)
-    
-    embedding = outputs.hidden_states[-1].mean(dim=1).squeeze().cpu().numpy()
+        outputs = model(**inputs, output_hidden_states=True)   
+    if hasattr(model, "key_embedding"):
+        embedding = outputs["hidden_states"][-1].mean(dim=1).squeeze().cpu().numpy()
+    else:
+        embedding = outputs.hidden_states[-1].mean(dim=1).squeeze().cpu().numpy()
     return embedding
 
 def prepare_Xy(path, model, tokenizer, target='class', seed=42):
