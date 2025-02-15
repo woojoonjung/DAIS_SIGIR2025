@@ -7,7 +7,7 @@ from safetensors.torch import load_file
 
 
 class JSONBERT_COMPLETE(BertForMaskedLM):
-    def __init__(self, config, tokenizer, model_path=None, lambda_align=0.45):
+    def __init__(self, config, tokenizer, model_path=None, lambda_align=0.4):
         """
         Args:
             config (BertConfig): Configuration for the BERT model.
