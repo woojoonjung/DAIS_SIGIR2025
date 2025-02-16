@@ -7,7 +7,7 @@ from safetensors.torch import load_file
 
 
 class JSONBERT_NEWLOSS_1(BertForMaskedLM):
-    def __init__(self, config, tokenizer, model_path=None, lambda_align=0.05):
+    def __init__(self, config, tokenizer, model_path=None, lambda_align=0.4):
         super(JSONBERT_NEWLOSS_1, self).__init__(config)
         self.tokenizer = tokenizer
 

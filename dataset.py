@@ -7,9 +7,13 @@ import hashlib
 from torch.utils.data import Dataset
 from transformers import PreTrainedTokenizer, DataCollatorForLanguageModeling
 from dataclasses import dataclass
+import fasttext
 
 SEED = 42
 random.seed(SEED)
+
+model_path = './lid.176.bin'
+model = fasttext.load_model(model_path)
 
 @dataclass
 class JSONDataCollator(DataCollatorForLanguageModeling):
@@ -128,6 +132,23 @@ class JSONDataCollator(DataCollatorForLanguageModeling):
         return batch
 
 
+def fasttext_detect_language(text):
+    """Detect the language of a given text using FastText."""
+    if not isinstance(text, str):
+        text = str(text)
+    try:
+        lang, _ = model.predict(text)
+        return lang[0].replace('__label__', '')
+    except Exception:
+        return 'unknown'
+    
+def is_table_english(rows, sample_size=20):
+    """Check if a table is in English by sampling a few rows."""
+    sample_text = ' '.join([str(row) for row in random.sample(rows, min(sample_size, len(rows)))])
+    detected_lang = fasttext_detect_language(sample_text)
+    return detected_lang == 'en'
+
+
 def _hash_row(row):
     """Create a unique hash for a row to track duplicates."""
     filtered_row = {k: v for k, v in row.items() if k not in ["genre", "actor", "category", "brand"]}
@@ -155,6 +176,16 @@ def create_data(path, path_is="dir", sample_num=None, pretraining_path=None):
                 filepath = os.path.join(path, filename)
                 with open(filepath, "r", encoding="utf-8") as f:
                     rows = [json.loads(line) for line in f]  # Read all lines as JSON objects
+
+                    if not is_table_english(rows):
+                        print(f"Skipping non-English table: {filename}")
+                        continue
+
+                    if tables_skipped_randomly < max_random_skips and random.random() < 0.5:
+                        tables_skipped_randomly += 1
+                        print(f"Randomly skipping table: {filename} (Random Skip #{tables_skipped_randomly})")
+                        continue
+
                     sampled_rows = random.sample(rows, min(sample_num, len(rows)))  # Sample rows
                     for row in sampled_rows:
                         for key in ["genre", "actor", "category", "brand"]:
@@ -196,6 +227,10 @@ def create_data(path, path_is="dir", sample_num=None, pretraining_path=None):
             filepath = os.path.join(path, filename)
             with open(filepath, "r", encoding="utf-8") as f:
                 rows = [json.loads(line) for line in f]
+
+                if not is_table_english(rows):
+                        print(f"Skipping non-English table: {filename}")
+                        continue
                 
                 # Filter only unseen rows
                 unseen_rows = [row for row in rows if _hash_row(row) not in pretraining_hashes]

@@ -2,38 +2,18 @@ import random
 from collections import Counter
 import pandas as pd
 from dataset import create_data
-from langdetect import detect, DetectorFactory
 
-DetectorFactory.seed = 42
-
-def detect_language(text):
-    """Detect the language of a given text."""
-    try:
-        if not isinstance(text, str):
-            text = str(text)
-        return detect(text)
-    except Exception as e:
-        return 'unknown'
-
-def filter_english_rows(data, key):
-    """Filter rows where the specified key's value is English."""
-    filtered_data = []
-    for item in data:
-        value = item.get(key)
-        if value is None:
-            continue
-        lang = detect_language(str(item))
-        if lang == 'en':
-            filtered_data.append(item)
-    return filtered_data
 
 def preprocess_value(value):
     """Return the first element if the value is a list, else the value itself."""
     if isinstance(value, list) and value:
         return value[0] 
     elif isinstance(value, dict) and value:
+        if len(value['name']) == 'w':
+            return 'MISSING'
         return value['name']
     return value if value is not None else 'MISSING'
+
 
 def find_top_two_values(data, key):
     """Find the two most common values for a given key."""
@@ -64,16 +44,9 @@ if __name__ == "__main__":
     movie = create_data(movie_path, path_is="test", sample_num=1000000, pretraining_path=pretraining_movie_path)
     product = create_data(product_path, path_is="test", sample_num=1000000, pretraining_path=pretraining_product_path)
 
-    print("👍 Created Original Datasets")
-
-    movie_filtered = filter_english_rows(movie, 'genre')
-    product_filtered = filter_english_rows(product, 'category')
-
-    print("🥳 Filtered Datasets")
-
     # Step 1: Find top 2 genres for movie and top 2 categories for product
-    top_two_genres = find_top_two_values(movie_filtered, 'genre')
-    top_two_categories = find_top_two_values(product_filtered, 'category')
+    top_two_genres = find_top_two_values(movie, 'genre')
+    top_two_categories = find_top_two_values(product, 'category')
 
     print("Top two genres in movie:", top_two_genres)
     print("Top two categories in product:", top_two_categories)
