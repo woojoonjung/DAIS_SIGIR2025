@@ -12,3 +12,6 @@ logs/
 
 # Allow specific directories if needed
 # !important_folder/
+
+# Model bins
+*.bin
