@@ -190,9 +190,9 @@ def create_data(path, path_is="dir", sample_num=None, pretraining_path=None):
                         continue
 
                     sampled_rows = random.sample(rows, min(sample_num, len(rows)))  # Sample rows
-                    for row in sampled_rows:
-                        for key in ["genre", "category", "filename"]:
-                            row.pop(key, None)
+                    # for row in sampled_rows:
+                    #     for key in ["genre", "category", "filename"]:
+                    #         row.pop(key, None)
                     data.extend(sampled_rows)
 
     elif path_is == "csv":
@@ -300,7 +300,6 @@ class JSONDataset(Dataset):
         return serialized
 
     
-    # Ignore
     def _serialize_delimitter(self, json_obj, parent_key="", sep="."):
         """
         Serialize a JSON object into a string format suitable for tokenization, handling nested structures.

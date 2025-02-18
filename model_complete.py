@@ -58,7 +58,7 @@ class JSONBERT_COMPLETE(BertForMaskedLM):
         for batch_idx, key_dict in enumerate(key_positions):
             if not key_dict:
                 print(f"Warning: Empty key_positions for batch index {batch_idx}")
-
+                
             for full_key, positions in key_dict.items():
                 sub_tokens = self.tokenizer.tokenize(full_key)
                 token_ids = self.tokenizer.convert_tokens_to_ids(sub_tokens)

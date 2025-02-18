@@ -2,7 +2,7 @@ import os
 import json
 from dataset import create_data
 
-def create_pretraining_data(data_path, pretraining_save_path, sample_num=400):
+def create_pretraining_data(data_path, pretraining_save_path, sample_num=450):
     if os.path.exists(pretraining_save_path):
         print(f"✅ Pretraining dataset already exists: {pretraining_save_path}")
         return
@@ -21,7 +21,7 @@ def create_pretraining_data(data_path, pretraining_save_path, sample_num=400):
     print(f"✅ Pretraining dataset saved at: {pretraining_save_path}")
 
 if __name__ == "__main__":
-    DATA_PATH = "./data/Movie_top100"
-    PRETRAINING_SAVE_PATH = "./data/pretraining_data_movie.jsonl"
+    DATA_PATH = "./data/Product_top100"
+    PRETRAINING_SAVE_PATH = "./data/pretraining_data_product.jsonl"
     
     create_pretraining_data(DATA_PATH, PRETRAINING_SAVE_PATH)
