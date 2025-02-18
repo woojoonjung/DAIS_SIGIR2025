@@ -1,0 +1,21 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+*.pyc
+__pycache__/
+
+# Logs and Debugging
+*.log
+logs/
+
+# Ignore all directories
+*/
+
+# Allow specific directories if needed
+# !important_folder/
+
+# Models
+*.bin
